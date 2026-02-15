@@ -1,6 +1,6 @@
-import "./processors/document.processor"
+import { documentWorker } from "./queues/document.queue"
+import { env } from "./config/env"
 
-export * from "./blockchain/shadowLedger"
-export * from "./blockchain/addresses"
-
-console.log("🕶️ Shadow Ledger Worker running...")
+console.log("🕶️ Shadow Ledger Worker started")
+console.log("Redis:", env.redisUrl)
+console.log("RPC URL:", env.hoodiRpcUrl)

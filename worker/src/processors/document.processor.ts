@@ -1,19 +1,37 @@
-import { Worker } from "bullmq"
-import { redisConnection } from "../config/redis"
+import { prisma } from "../../backend/src/config/database"
+import { registerDocumentOnChain } from "../services/blockchain.service"
 
-new Worker(
-  "documentQueue",
-  async (job) => {
-    console.log("Processing job:", job.name)
+type JobData = {
+  documentId: string
+  hash: string
+}
 
-    if (job.name === "register-document") {
-      const { hash } = job.data
+export const processDocument = async ({ documentId, hash }: JobData) => {
+  console.log("Processing job:", documentId, hash)
 
-      // Future: Send transaction to smart contract
-      console.log("Registering document hash:", hash)
-    }
-  },
-  {
-    connection: redisConnection,
+  try {
+    // send to contract
+    const txHash = await registerDocumentOnChain(hash)
+
+    console.log("Document registered on-chain with txHash:", txHash)
+
+    // update DB
+    await prisma.document.update({
+      where: { id: documentId },
+      data: {
+        status: "CONFIRMED",
+        txHash,
+      },
+    })
+  } catch (error) {
+    console.error("Blockchain error:", error)
+
+    // update DB status
+    await prisma.document.update({
+      where: { id: documentId },
+      data: {
+        status: "FAILED",
+      },
+    })
   }
-)
+}
