@@ -1,7 +1,11 @@
-const config = {
-  plugins: {
-    "@tailwindcss/postcss": {},
+/** @type {import('tailwindcss').Config} */
+export default {
+  content: [
+    "./src/**/*.{js,ts,jsx,tsx}",
+    "../shared/src/**/*.{js,ts}",
+  ],
+  theme: {
+    extend: {},
   },
-};
-
-export default config;
+  plugins: [],
+}

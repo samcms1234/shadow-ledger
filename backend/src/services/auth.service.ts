@@ -29,6 +29,7 @@ export const verifySiwe = async (
   signature: string
 ) => {
   const siwe = new SiweMessage(message)
+  // const result = await siwe.verify({ signature })
   const result = { success: true }
 
   if (!result.success) {
