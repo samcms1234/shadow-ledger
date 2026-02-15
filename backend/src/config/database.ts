@@ -1,4 +1,18 @@
-// src/config/database.ts
 import { PrismaClient } from "@prisma/client"
+import { env } from "./env"
 
-export const prisma = new PrismaClient()
+const globalForPrisma = global as unknown as {
+  prisma?: PrismaClient
+}
+
+export const prisma =
+  globalForPrisma.prisma ??
+  new PrismaClient({
+    datasource: {
+      url: env.databaseUrl,
+    },
+  })
+
+if (process.env.NODE_ENV !== "production") {
+  globalForPrisma.prisma = prisma
+}

@@ -5,3 +5,29 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+
+model User {
+  id        String     @id @default(uuid())
+  wallet    String     @unique
+  role      String     @default("USER")
+  nonce     String?
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  documents Document[] // ← required opposite relation
+}
+
+model Document {
+  id        String   @id @default(uuid())
+  hash      String
+  version   Int      @default(1)
+  status    String   @default("PENDING")
+  txHash    String?
+  issuerId  String
+  issuer    User     @relation(fields: [issuerId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([hash])
+  @@index([issuerId])
+}
