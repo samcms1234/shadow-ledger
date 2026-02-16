@@ -1,17 +1,17 @@
 import { cookieStorage, createConfig, createStorage, http } from 'wagmi'
-import { mainnet, sepolia, polygon } from 'wagmi/chains'
+import { mainnet, sepolia, polygon, hoodi } from 'wagmi/chains'
 import { injected, walletConnect } from "wagmi/connectors"
 
 export function getConfig() {
   return createConfig({
-    chains: [mainnet, sepolia],
+    chains: [mainnet, hoodi],
     storage: createStorage({
       storage: cookieStorage,
     }),
     ssr: true,
     transports: {
       [mainnet.id]: http(),
-      [sepolia.id]: http(),
+      [hoodi.id]: http(),
     },
   })
 }

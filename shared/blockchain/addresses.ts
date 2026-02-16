@@ -1,0 +1,3 @@
+export const CONTRACT_ADDRESSES = {
+  hoodi: "0x706CFabceAF92c3608197888a05fC649bfAF3E0B",
+}
