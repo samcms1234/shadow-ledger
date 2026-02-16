@@ -1,13 +1,24 @@
 "use client"
 
 import { create } from "zustand"
+import { persist } from "zustand/middleware"
 
 interface AuthState {
   token: string | null
   setToken: (token: string | null) => void
+  clearToken: () => void
 }
 
-export const useAuthStore = create<AuthState>((set) => ({
-  token: null,
-  setToken: (token) => set({ token }),
-}))
+export const useAuthStore = create(
+  persist<AuthState>(
+    (set) => ({
+      token: null,
+      setToken: (token) => set({ token }),
+      clearToken: () => set({ token: null }),
+    }),
+    {
+      name: "auth-storage",     // localStorage key
+      getStorage: () => localStorage,
+    }
+  )
+)

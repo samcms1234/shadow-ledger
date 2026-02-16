@@ -1,10 +1,15 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useToast } from "@/context/toast.context"
 import { api } from "@/lib/api-client"
+import { useAuthStore } from "@/store/auth.store"
 
 export const useDocuments = () => {
   const [loading, setLoading] = useState(false)
   const { showToast } = useToast()
+
+  useEffect(() => {
+  console.log(useAuthStore.getState().token);
+})
 
   const submitDocument = async (hash: string) => {
     try {

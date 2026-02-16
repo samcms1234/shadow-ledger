@@ -2,11 +2,13 @@ import { useSignMessage } from "wagmi"
 import { api } from "@/lib/api-client"
 import { useWallet } from "./useWallet"
 import { useRouter } from "next/navigation"
+import { useAuthStore } from "@/store/auth.store"
 
 export const useSiwe = () => {
   const { address } = useWallet()
   const { signMessageAsync } = useSignMessage()
   const router = useRouter()
+  const setToken = useAuthStore((state) => state.setToken)
 
   const login = async () => {
     if (!address) return
@@ -38,9 +40,10 @@ Issued At: ${new Date().toISOString()}`
     console.log({ message: siweMessage, signature })
 
     // Step 4 — Send to backend for verification
-    await api.post("/api/auth/login", { message: siweMessage, signature })
+    const { data: loginResponse } = await api.post("/api/auth/login", { message: siweMessage, signature })
+    setToken(loginResponse.token)
 
-    router.refresh()
+    router.push('/dashboard')
   }
 
   return { login }
